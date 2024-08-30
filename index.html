@@ -93,20 +93,6 @@
         background-color: #138496;
       }
 
-      /* 警告按钮样式 */
-      .btn-warning {
-        background-color: #f0ad4e; /* 新的警告按钮背景色 */
-        color: #212529; /* 文字颜色保持不变 */
-        border-color: #f0ad4e; /* 边框颜色与背景色一致 */
-      }
-
-      /* 悬停状态 */
-      .btn-warning:hover {
-        background-color: #ec971f; /* 悬停时背景色稍暗 */
-        color: #212529; /* 悬停时文字颜色 */
-        border-color: #ec971f; /* 悬停时边框颜色 */
-      }
-
       @media (max-width: 480px) {
         .timer {
           font-size: 96px; /* 更小的设备上进一步缩小字体 */
@@ -129,12 +115,9 @@
         <div class="time-card" id="nowTime">00:00:00</div>
         <div class="time-card" id="timer">00:00:00</div>
       </div>
-      <!-- <div class="current-time" id="nowTime">当前时间：00:00:00</div>
-      <div class="timer" id="timer">00:00:00</div> -->
       <div class="actions">
         <button class="btn btn-success" id="startStopBtn">开始</button>
         <button class="btn btn-info" id="resetBtn" disabled>重置</button>
-        <button class="btn btn-warning" id="toggleSizeBtn">切换大小</button>
       </div>
     </div>
 
@@ -184,12 +167,14 @@
           startStopBtn.classList.remove("btn-success");
           startStopBtn.classList.add("btn-danger");
           resetBtn.disabled = false;
+          toggleSize();
         } else {
           isRunning = false;
           clearInterval(interval);
           startStopBtn.textContent = "继续";
           startStopBtn.classList.remove("btn-danger");
           startStopBtn.classList.add("btn-success");
+          toggleSize();
         }
       }
 
@@ -221,7 +206,6 @@
       // 绑定按钮事件
       startStopBtn.addEventListener("click", startStopTimer);
       resetBtn.addEventListener("click", resetTimer);
-      toggleSizeBtn.addEventListener("click", toggleSize);
 
       // 监听键盘事件，检测空格键
       document.addEventListener("keydown", function (event) {
@@ -236,8 +220,8 @@
       setInterval(updateCurrentTime, 1000);
 
       // 初始化大小状态
-      nowTimeElement.classList.add("small");
-      timerElement.classList.add("large");
+      nowTimeElement.classList.add("large");
+      timerElement.classList.add("small");
     </script>
   </body>
 </html>
