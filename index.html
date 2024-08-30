@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>计时器</title>
+    <style>
+      @charset "utf-8";
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "微软雅黑", "Roboto", sans-serif; /* 使用微软雅黑字体 */
+        background: #121212;
+        color: white;
+      }
+
+      .mainbox {
+        text-align: center;
+      }
+
+      .timer {
+        font-size: 288px; /* 调大计时器数字 */
+        margin-bottom: 20px;
+      }
+
+      .current-time {
+        font-size: 48px;
+        margin-bottom: 20px;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .btn {
+        padding: 20px 40px; /* 调整按钮的 padding */
+        font-size: 30px; /* 调整按钮的字体大小 */
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        color: white;
+      }
+
+      .btn-success {
+        background-color: #28a745;
+      }
+
+      .btn-success:hover {
+        background-color: #218838;
+      }
+
+      .btn-danger {
+        background-color: #dc3545;
+      }
+
+      .btn-danger:hover {
+        background-color: #c82333;
+      }
+
+      .btn-info {
+        background-color: #17a2b8;
+      }
+
+      .btn-info:hover {
+        background-color: #138496;
+      }
+      @media (max-width: 480px) {
+        .timer {
+          font-size: 96px; /* 更小的设备上进一步缩小字体 */
+        }
+
+        .current-time {
+          font-size: 16px;
+        }
+
+        .btn {
+          padding: 10px 20px;
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mainbox">
+      <div class="current-time" id="nowTime">当前时间：00:00:00</div>
+      <div class="timer" id="timer">00:00:00</div>
+      <div class="actions">
+        <button class="btn btn-success" id="startStopBtn">开始</button>
+        <button class="btn btn-info" id="resetBtn" disabled>重置</button>
+      </div>
+    </div>
+
+    <script>
+      let startTime,
+        updatedTime,
+        difference = 0;
+      let interval;
+      let isRunning = false;
+
+      const timerElement = document.getElementById("timer");
+      const startStopBtn = document.getElementById("startStopBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const nowTimeElement = document.getElementById("nowTime");
+
+      function updateTimer() {
+        updatedTime = new Date().getTime();
+        difference = updatedTime - startTime;
+
+        let hours = Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        hours = hours < 10 ? "0" + hours : hours;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+      }
+
+      function updateCurrentTime() {
+        const now = new Date();
+        nowTimeElement.textContent =
+          "当前时间：" + now.toLocaleTimeString("chinese", { hour12: false });
+      }
+
+      function startStopTimer() {
+        if (!isRunning) {
+          isRunning = true;
+          startTime = new Date().getTime() - difference;
+          interval = setInterval(updateTimer, 1000);
+          startStopBtn.textContent = "暂停";
+          startStopBtn.classList.remove("btn-success");
+          startStopBtn.classList.add("btn-danger");
+          resetBtn.disabled = false;
+        } else {
+          isRunning = false;
+          clearInterval(interval);
+          startStopBtn.textContent = "继续";
+          startStopBtn.classList.remove("btn-danger");
+          startStopBtn.classList.add("btn-success");
+        }
+      }
+
+      function resetTimer() {
+        clearInterval(interval);
+        isRunning = false;
+        difference = 0;
+        timerElement.textContent = "00:00:00";
+        startStopBtn.textContent = "开始";
+        startStopBtn.classList.remove("btn-danger");
+        startStopBtn.classList.add("btn-success");
+        resetBtn.disabled = true;
+      }
+
+      startStopBtn.addEventListener("click", startStopTimer);
+      resetBtn.addEventListener("click", resetTimer);
+
+      // 监听键盘事件，检测空格键
+      document.addEventListener("keydown", function (event) {
+        if (event.code === "Space") {
+          event.preventDefault(); // 防止页面滚动或其他默认行为
+          startStopTimer();
+        }
+      });
+
+      // 实时更新时间显示，立即调用一次确保不会有延迟
+      updateCurrentTime();
+      setInterval(updateCurrentTime, 1000);
+    </script>
+  </body>
+</html>
