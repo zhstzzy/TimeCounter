@@ -174,7 +174,10 @@
           startStopBtn.textContent = "继续";
           startStopBtn.classList.remove("btn-danger");
           startStopBtn.classList.add("btn-success");
-          toggleSize();
+          nowTimeElement.classList.remove("small");
+          nowTimeElement.classList.add("large");
+          timerElement.classList.remove("large");
+          timerElement.classList.add("small");
         }
       }
 
